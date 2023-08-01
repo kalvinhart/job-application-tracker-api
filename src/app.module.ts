@@ -6,6 +6,8 @@ import databaseConfig from "./config/database.config";
 import { JwtModule } from "@nestjs/jwt";
 import { Config } from "./config/enums/Config";
 import { DevtoolsModule } from "@nestjs/devtools-integration";
+import { AuthModule } from './modules/auth/auth.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -29,6 +31,8 @@ import { DevtoolsModule } from "@nestjs/devtools-integration";
     DevtoolsModule.register({
       http: process.env.NODE_ENV !== "production",
     }),
+    AuthModule,
+    UserModule,
   ],
   controllers: [],
   providers: [],

@@ -1,7 +1,7 @@
 import { NestFactory, PartialGraphHost } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
-import fs from "fs";
+import * as fs from "fs";
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, {
