@@ -8,6 +8,7 @@ import { Config } from "./config/enums/Config";
 import { DevtoolsModule } from "@nestjs/devtools-integration";
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
+import { JobModule } from './modules/job/job.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { UserModule } from './modules/user/user.module';
     }),
     AuthModule,
     UserModule,
+    JobModule,
   ],
   controllers: [],
   providers: [],
