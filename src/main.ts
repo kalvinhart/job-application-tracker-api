@@ -21,7 +21,7 @@ async function bootstrap(): Promise<void> {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("docs", app, document);
 
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 8083);
 }
 bootstrap().catch(() => {
   fs.writeFileSync("graph.json", PartialGraphHost.toString() ?? "");
