@@ -9,12 +9,6 @@ export class User {
 
   @Prop({
     required: true,
-    minlength: 6,
-  })
-  name: string;
-
-  @Prop({
-    required: true,
     unique: true,
   })
   email: string;

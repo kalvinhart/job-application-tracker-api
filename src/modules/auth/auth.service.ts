@@ -25,14 +25,13 @@ export class AuthService {
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<UserDto> {
-    const { name, email, password } = createUserDto;
+    const { email, password } = createUserDto;
 
     await this.ensureUniqueUser(email);
 
     const passwordHash = this.hashPassword(password);
 
     const newUser = new this.userModel({
-      name,
       email,
       password: passwordHash,
     });
