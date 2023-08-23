@@ -24,7 +24,7 @@ export class AuthService {
     this.baseConfig = this.configService.get<BaseConfig>(Config.BASE);
   }
 
-  async createUser(createUserDto: CreateUserDto): Promise<UserDto> {
+  async createUser(createUserDto: CreateUserDto): Promise<SignInResultDto> {
     const { email, password } = createUserDto;
 
     await this.ensureUniqueUser(email);
@@ -38,7 +38,13 @@ export class AuthService {
 
     const savedUser = await newUser.save();
 
-    return new UserDto(savedUser);
+    const token = await this.jwtService.signAsync(savedUser.toObject(), {
+      secret: this.baseConfig.jwtKey,
+    });
+
+    const userResult = new UserDto(savedUser);
+
+    return new SignInResultDto(userResult, token);
   }
 
   hashPassword(password: string): string {
