@@ -10,6 +10,11 @@ import { UpdateJobDto } from "./dto/update-job.dto";
 export class JobService {
   constructor(@InjectModel(Job.name) private jobModel: Model<Job>) {}
 
+  async getAllUserJobs(userId: string): Promise<JobDto[]> {
+    const jobs = await this.jobModel.find({ user: userId });
+    return jobs.map(job => new JobDto(job));
+  }
+
   async createJob(userId: string, createJobDto: CreateJobDto): Promise<JobDto> {
     const newJob = new this.jobModel({ ...createJobDto, user: userId });
 
