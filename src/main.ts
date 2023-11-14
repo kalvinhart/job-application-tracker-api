@@ -2,6 +2,7 @@ import { NestFactory, PartialGraphHost } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import * as fs from "fs";
+import * as cookieParser from "cookie-parser";
 import { ValidationPipe } from "@nestjs/common";
 
 async function bootstrap(): Promise<void> {
@@ -9,8 +10,12 @@ async function bootstrap(): Promise<void> {
     abortOnError: false,
   });
   app.setGlobalPrefix("api");
-  app.enableCors();
+  app.enableCors({
+    origin: process.env.CORS_ORIGIN,
+    credentials: true,
+  });
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.use(cookieParser());
 
   const config = new DocumentBuilder()
     .setTitle("Job Application Tracker API")
