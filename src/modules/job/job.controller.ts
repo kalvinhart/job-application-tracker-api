@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Put, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, NotFoundException, Post, Put, Req, UseGuards } from "@nestjs/common";
 import { JobService } from "./job.service";
 import { CreateJobDto } from "./dto/create-job.dto";
 import { Request } from "express";
@@ -33,6 +33,9 @@ export class JobController {
   async updateJob(@Body() updateJobDto: UpdateJobDto, @Req() request: Request): Promise<JobDto> {
     const { user } = request;
 
-    return await this.jobService.updateJob(user._id, updateJobDto);
+    const updatedJob = await this.jobService.updateJob(user._id, updateJobDto);
+    if (!updatedJob) throw new NotFoundException("Job not found.");
+
+    return updatedJob;
   }
 }

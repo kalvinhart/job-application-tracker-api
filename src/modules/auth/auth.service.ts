@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { InjectModel } from "@nestjs/mongoose";
@@ -53,17 +53,17 @@ export class AuthService {
 
   async ensureUniqueUser(email: string): Promise<void> {
     const existingUser: UserDocument = await this.userModel.findOne({ email });
-    if (existingUser) throw new BadRequestException("A user with this email address already exists.");
+    if (existingUser) throw new Error("A user with this email address already exists.");
   }
 
   async signIn(userCredentials: SignInDto): Promise<SignInResultDto> {
     const { email, password } = userCredentials;
 
     const user: UserDocument = await this.userModel.findOne({ email }).lean();
-    if (!user) throw new UnauthorizedException("Invalid username/password.");
+    if (!user) throw new Error("Invalid username/password.");
 
     const match = compareSync(password, user.password);
-    if (!match) throw new UnauthorizedException("Invalid username/password.");
+    if (!match) throw new Error("Invalid username/password.");
 
     const token = await this.jwtService.signAsync(user, {
       secret: this.baseConfig.jwtKey,

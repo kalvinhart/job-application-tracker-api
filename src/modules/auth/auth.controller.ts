@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Res } from "@nestjs/common";
+import {BadRequestException, Body, Controller, Get, Post, Res, UnauthorizedException} from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { SignInDto } from "./dto/sign-in.dto";
@@ -10,17 +10,24 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post("login")
-  async signIn(@Body() signInDto: SignInDto, @Res({ passthrough: true }) response: Response): Promise<UserDto> {
-    const { token, user } = await this.authService.signIn(signInDto);
+  async signIn(
+      @Body() signInDto: SignInDto,
+      @Res({ passthrough: true }) response: Response
+  ): Promise<UserDto> {
+    try {
+      const { token, user } = await this.authService.signIn(signInDto);
 
-    response.cookie("auth-token", token, {
-      httpOnly: true,
-      maxAge: 60 * 60 * 24 * 3,
-      sameSite: "none",
-      secure: true,
-    });
+      response.cookie("auth-token", token, {
+        httpOnly: true,
+        maxAge: 60 * 60 * 24 * 3,
+        sameSite: "none",
+        secure: true,
+      });
 
-    return user;
+      return user;
+    } catch (error) {
+      throw new UnauthorizedException(error.message);
+    }
   }
 
   @Post("register")
@@ -28,16 +35,20 @@ export class AuthController {
     @Body() createUserDto: CreateUserDto,
     @Res({ passthrough: true }) response: Response
   ): Promise<UserDto> {
-    const { token, user } = await this.authService.createUser(createUserDto);
+    try {
+      const { token, user } = await this.authService.createUser(createUserDto);
 
-    response.cookie("auth-token", token, {
-      httpOnly: true,
-      maxAge: 60 * 60 * 24 * 3,
-      sameSite: "none",
-      secure: true,
-    });
+      response.cookie("auth-token", token, {
+        httpOnly: true,
+        maxAge: 60 * 60 * 24 * 3,
+        sameSite: "none",
+        secure: true,
+      });
 
-    return user;
+      return user;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   @Get("logout")

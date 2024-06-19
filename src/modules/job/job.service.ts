@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Job } from "./schemas/job.schema";
 import { Model } from "mongoose";
@@ -23,12 +23,12 @@ export class JobService {
     return new JobDto(savedJob);
   }
 
-  async updateJob(userId: string, updateJobDto: UpdateJobDto): Promise<JobDto> {
+  async updateJob(userId: string, updateJobDto: UpdateJobDto): Promise<JobDto | null> {
     const job = await this.jobModel.findOneAndUpdate({ _id: updateJobDto._id, user: userId }, updateJobDto, {
       new: true,
       runValidators: true,
     });
-    if (!job) throw new NotFoundException("Job not found.");
+    if (!job) return null;
 
     return new JobDto(job);
   }
