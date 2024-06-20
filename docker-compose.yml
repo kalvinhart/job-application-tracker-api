@@ -1,0 +1,34 @@
+﻿services:
+  job-application-tracker.api:
+    container_name: job-application-tracker.api
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: development
+    depends_on:
+      - job-application-tracker.db
+    environment:
+      CORS_ORIGIN: http://localhost:5173
+      PORT: 4200
+      MONGO_URI: mongodb://job-application-tracker.db:27017/job-application-tracker
+      JWT_KEY: notasecretforproduction
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    env_file:
+      - .env
+    command: npm run start:dev
+    ports:
+      - 4200:4200
+
+  job-application-tracker.db:
+    container_name: job-application-tracker.db
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - job-db:/data/db
+
+volumes:
+  job-db:
